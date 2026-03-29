@@ -1,0 +1,4 @@
+{
+  "ignoreDependencies": ["agent-browser", "supabase"],
+  "ignoreBinaries": ["only-allow"]
+}

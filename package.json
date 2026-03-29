@@ -1,0 +1,54 @@
+{
+  "name": "albatross",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit",
+    "knip": "knip",
+    "test": "echo 'No tests configured'",
+    "preinstall": "npx only-allow pnpm",
+    "import-puzzles": "tsx scripts/import-puzzles.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "^2.0.37",
+    "@supabase/ssr": "^0.9.0",
+    "@supabase/supabase-js": "^2.100.1",
+    "@t3-oss/env-nextjs": "^0.13.11",
+    "ai": "^6.0.141",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "motion": "^12.38.0",
+    "next": "16.2.1",
+    "radix-ui": "^1.4.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "roughjs": "^4.6.6",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.9",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "agent-browser": "^0.23.0",
+    "knip": "^6.1.0",
+    "postcss": "^8.5.8",
+    "supabase": "^2.84.4",
+    "tailwindcss": "^4",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "supabase"
+    ]
+  },
+  "packageManager": "pnpm@10.29.3+sha256.a74f4dbd3f5a7ca874d004135271f0b697b683bf1fd2fc2133961161cd25b29c"
+}
