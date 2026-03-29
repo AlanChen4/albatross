@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Reenie_Beanie } from "next/font/google";
 import "./globals.css";
@@ -30,7 +31,10 @@ export default function RootLayout({
       <head>
         <ThemeScript />
       </head>
-      <body className={reenieBeanie.className}>{children}</body>
+      <body className={reenieBeanie.className}>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
