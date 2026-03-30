@@ -275,17 +275,19 @@ export function PuzzleGame({ puzzle }: { puzzle: Puzzle }) {
         >
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <span className="text-muted-foreground">{guessesLeftDisplay}</span>
-            <Button
-              className="mx-4 px-2"
-              disabled={loading}
-              onClick={() => setGuessMode(!guessMode)}
-              rounded={"full"}
-              size="sm"
-              sketchy
-              variant={"outline"}
-            >
-              {guessMode ? "never mind" : "I think I know..."}
-            </Button>
+            {gameState.questions.length > 0 && (
+              <Button
+                className="mx-4 px-2"
+                disabled={loading}
+                onClick={() => setGuessMode(!guessMode)}
+                rounded={"full"}
+                size="sm"
+                sketchy
+                variant={"outline"}
+              >
+                {guessMode ? "never mind" : "Think you know? Guess now..."}
+              </Button>
+            )}
           </div>
         </motion.div>
       )}
