@@ -26,13 +26,15 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    await supabase.auth.signInAnonymously();
-  }
+  // Refresh existing session only — don't create anonymous accounts here.
+  // Anonymous sign-in is deferred to the client when the user first interacts.
+  await supabase.auth.getUser();
 
   return response;
 }
+
+export const config = {
+  matcher: [
+    "/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|imgs/).*)",
+  ],
+};

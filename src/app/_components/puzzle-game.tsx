@@ -6,6 +6,7 @@ import { getQuestionsLeftMessage, MAX_QUESTIONS } from "~/app/_lib/constants";
 import type { IntroPhase, Puzzle } from "~/app/_lib/types";
 import { TopBar } from "~/components/top-bar";
 import { Button } from "~/components/ui/button";
+import { useEnsureSession } from "~/hooks/use-ensure-session";
 import { useGameState } from "~/hooks/use-game-state";
 import { useTransferProgress } from "~/hooks/use-transfer-progress";
 import { useTypewriter } from "~/hooks/use-typewriter";
@@ -25,6 +26,7 @@ export function PuzzleGame({ puzzle }: { puzzle: Puzzle }) {
   const [solution, setSolution] = useState<string | null>(null);
   const [guessMode, setGuessMode] = useState(false);
 
+  const ensureSession = useEnsureSession();
   useTransferProgress(useCallback(() => setRefreshKey((k) => k + 1), []));
 
   const isSolved = gameState.questions.some((q) => q.judgment === "correct");
@@ -105,6 +107,9 @@ export function PuzzleGame({ puzzle }: { puzzle: Puzzle }) {
 
       setLoading(true);
 
+      // Create anonymous session on first interaction if not logged in
+      await ensureSession();
+
       const isSolveAttempt = guessMode;
       let judgment: Judgment = isSolveAttempt ? "incorrect" : "no";
       let reasoning: string | undefined;
@@ -170,6 +175,7 @@ export function PuzzleGame({ puzzle }: { puzzle: Puzzle }) {
       puzzle.id,
       setGameState,
       fetchSolution,
+      ensureSession,
     ],
   );
 
