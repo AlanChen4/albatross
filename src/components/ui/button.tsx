@@ -55,7 +55,7 @@ function Button({
   variant = "default",
   size = "default",
   rounded = "default",
-  sketchy = false,
+  sketchy = true,
   asChild = false,
   children,
   ...props

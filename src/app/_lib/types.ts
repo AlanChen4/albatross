@@ -20,6 +20,7 @@ export type Puzzle = {
   id: string;
   prompt: string;
   image_url: string | null;
+  slug: string;
 };
 
 export type IntroPhase = "gif" | "typewriter" | "done";

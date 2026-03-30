@@ -1,28 +1,31 @@
 "use client";
 
-import { motion } from "motion/react";
-import Image from "next/image";
+import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getQuestionsLeftMessage, MAX_QUESTIONS } from "~/app/_lib/constants";
 import type { IntroPhase, Puzzle } from "~/app/_lib/types";
+import { TopBar } from "~/components/top-bar";
 import { Button } from "~/components/ui/button";
 import { useGameState } from "~/hooks/use-game-state";
+import { useTransferProgress } from "~/hooks/use-transfer-progress";
 import { useTypewriter } from "~/hooks/use-typewriter";
 import type { Judgment } from "~/lib/judgment";
 import { createClient } from "~/lib/supabase/client";
 import { cn } from "~/lib/utils";
-import { CountdownTimer } from "./countdown-timer";
 import { GameOver } from "./game-over";
 import { PuzzleIntro } from "./puzzle-intro";
 import { QuestionForm } from "./question-form";
 
 export function PuzzleGame({ puzzle }: { puzzle: Puzzle }) {
+  const [refreshKey, setRefreshKey] = useState(0);
   const { gameState, setGameState, mounted, hasExistingQuestions } =
-    useGameState(puzzle.id);
+    useGameState(puzzle.id, refreshKey);
   const [introPhase, setIntroPhase] = useState<IntroPhase>("gif");
   const [loading, setLoading] = useState(false);
   const [solution, setSolution] = useState<string | null>(null);
   const [guessMode, setGuessMode] = useState(false);
+
+  useTransferProgress(useCallback(() => setRefreshKey((k) => k + 1), []));
 
   const isSolved = gameState.questions.some((q) => q.judgment === "correct");
   const isRevealed = gameState.questions.some((q) => q.revealed);
@@ -75,6 +78,26 @@ export function PuzzleGame({ puzzle }: { puzzle: Puzzle }) {
       fetchSolution();
     }
   }, [mounted]);
+
+  const skipIntro = useCallback(() => {
+    if (introPhase !== "done") {
+      setIntroPhase("done");
+    }
+  }, [introPhase]);
+
+  useEffect(() => {
+    if (introPhase === "done") return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Tab") {
+        e.preventDefault();
+        skipIntro();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [introPhase, skipIntro]);
 
   const handleSubmit = useCallback(
     async (question: string) => {
@@ -178,41 +201,33 @@ export function PuzzleGame({ puzzle }: { puzzle: Puzzle }) {
 
   if (!mounted) {
     return (
-      <main className="flex min-h-dvh flex-col items-center justify-center p-8" />
+      <main className="flex min-h-0 flex-1 flex-col items-center justify-center p-8" />
     );
   }
 
   const isIntro = introPhase !== "done";
 
   return (
-    <main className="flex min-h-dvh flex-col items-center px-4 pt-4 pb-4">
-      {!isIntro && (
-        <motion.div
-          animate={
-            guessMode ? { opacity: 0, y: "-100%" } : { opacity: 1, y: 0 }
-          }
-          className="flex flex-col items-end self-end"
-          initial={{ opacity: 0, y: "-100%" }}
-          transition={{ duration: 0.3 }}
-        >
-          <a
-            className="flex items-center gap-2 text-muted-foreground"
-            href="https://x.com/justmaler"
-            rel="noopener noreferrer"
-            target="_blank"
+    <main className="relative flex min-h-0 flex-1 flex-col items-center px-4 pt-4 pb-4 md:pt-10">
+      <AnimatePresence>
+        {isIntro && (
+          <motion.button
+            animate={{ opacity: 1 }}
+            className="absolute top-4 text-muted-foreground text-sm"
+            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            onClick={skipIntro}
+            transition={{ duration: 0.3 }}
+            type="button"
           >
-            <Image
-              alt="Albatross"
-              className="dark:invert"
-              height={32}
-              src="/imgs/logo.png"
-              width={32}
-            />
-            made with delight, —maler
-          </a>
-          <CountdownTimer />
-        </motion.div>
-      )}
+            <span className="hidden md:inline">
+              press tab or click here to skip
+            </span>
+            <span className="md:hidden">tap here to skip</span>
+          </motion.button>
+        )}
+      </AnimatePresence>
+      {!isIntro && !guessMode && <TopBar puzzleId={puzzle.id} />}
       <div
         className={cn(
           "flex w-full max-w-md flex-col items-center",
@@ -261,7 +276,7 @@ export function PuzzleGame({ puzzle }: { puzzle: Puzzle }) {
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <span className="text-muted-foreground">{guessesLeftDisplay}</span>
             <Button
-              className="mx-4 md:px-0"
+              className="mx-4 px-2"
               disabled={loading}
               onClick={() => setGuessMode(!guessMode)}
               rounded={"full"}

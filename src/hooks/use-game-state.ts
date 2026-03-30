@@ -5,7 +5,10 @@ import type { GameState, QuestionEntry } from "~/app/_lib/types";
 import type { Judgment } from "~/lib/judgment";
 import { createClient } from "~/lib/supabase/client";
 
-export function useGameState(puzzleId: string): {
+export function useGameState(
+  puzzleId: string,
+  refreshKey = 0,
+): {
   gameState: GameState;
   setGameState: Dispatch<SetStateAction<GameState>>;
   mounted: boolean;
@@ -15,6 +18,7 @@ export function useGameState(puzzleId: string): {
   const [mounted, setMounted] = useState(false);
   const [hasExistingQuestions, setHasExistingQuestions] = useState(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: refreshKey triggers a re-fetch after anonymous progress transfer
   useEffect(() => {
     async function loadFromDB() {
       const supabase = createClient();
@@ -58,7 +62,7 @@ export function useGameState(puzzleId: string): {
       setMounted(true);
     }
     loadFromDB();
-  }, [puzzleId]);
+  }, [puzzleId, refreshKey]);
 
   return { gameState, setGameState, mounted, hasExistingQuestions };
 }

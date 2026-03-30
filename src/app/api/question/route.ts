@@ -1,18 +1,8 @@
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText, Output } from "ai";
 import { z } from "zod";
 
-import { env } from "~/env";
+import { modelFlash } from "~/lib/ai";
 import { createClient } from "~/lib/supabase/server";
-
-const gateway = createOpenAICompatible({
-  name: "vercel-ai-gateway",
-  baseURL: "https://ai-gateway.vercel.sh/v1",
-  apiKey: env.VERCEL_AI_GATEWAY_API_KEY,
-  supportsStructuredOutputs: true,
-});
-
-const model = gateway("zai/glm-4.7");
 
 const requestSchema = z.object({
   puzzleId: z.string(),
@@ -71,7 +61,7 @@ export async function POST(request: Request) {
   }
 
   const { output } = await generateText({
-    model,
+    model: modelFlash,
     output: Output.object({ schema: judgmentSchema }),
     prompt: `You are a judge for a lateral thinking puzzle game.
 
@@ -85,7 +75,7 @@ Judge the player's question according to these rules:
 - "yes" if the answer to their question is yes based on the solution
 - "no" if the answer to their question is no based on the solution
 - "not_relevant" if the question is unrelated to solving the puzzle
-- "not_yes_or_no" if the question cannot be answered with yes or no
+- "not_yes_or_no" if the question was not a yes or no question (e.g. "Why did ...")
 - "more_than_one_question" if they asked more than one question
 
 Use the previous questions and answers for context to better understand what the player is asking about, but judge only the current question.

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect } from "react";
 import type { IntroPhase } from "~/app/_lib/types";
 import { useTypewriter } from "~/hooks/use-typewriter";
+import { cn } from "~/lib/utils";
 
 type PuzzleIntroProps = {
   imageUrl: string | null;
@@ -45,7 +46,7 @@ export function PuzzleIntro({
       {imageUrl && (
         <motion.div
           animate={{ opacity: guessMode ? 0 : 1 }}
-          className="relative mb-3 h-24 w-24 self-center md:h-32 md:w-32"
+          className="relative mt-16 mb-3 h-24 w-24 self-center md:mt-0 md:h-32 md:w-32"
           transition={{ duration: 0.4, ease: "easeInOut" }}
         >
           <Image
@@ -64,11 +65,13 @@ export function PuzzleIntro({
         <motion.p
           animate={{
             opacity: 1,
-            scale: guessMode ? 1.25 : 1,
+            fontSize: guessMode ? "1.15em" : "1em",
           }}
-          className="mb-4 w-full text-foreground"
-          initial={{ opacity: 0, scale: 1 }}
-          style={{ originX: 0.5, originY: 0.5 }}
+          className={cn(
+            "mb-4 w-full text-foreground",
+            !imageUrl && "mt-16 md:mt-24",
+          )}
+          initial={{ opacity: 0, fontSize: "1em" }}
           transition={{ duration: 0.4, ease: "easeInOut" }}
         >
           {introPhase !== "done" ? (

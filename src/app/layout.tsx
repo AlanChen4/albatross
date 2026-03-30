@@ -25,7 +25,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={reenieBeanie.className}>
+      <body className={`${reenieBeanie.className} relative`}>
         {children}
         <Analytics />
       </body>

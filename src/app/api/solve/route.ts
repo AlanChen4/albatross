@@ -1,18 +1,8 @@
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText, Output } from "ai";
 import { z } from "zod";
 
-import { env } from "~/env";
+import { modelFlash } from "~/lib/ai";
 import { createClient } from "~/lib/supabase/server";
-
-const gateway = createOpenAICompatible({
-  name: "vercel-ai-gateway",
-  baseURL: "https://ai-gateway.vercel.sh/v1",
-  apiKey: env.VERCEL_AI_GATEWAY_API_KEY,
-  supportsStructuredOutputs: true,
-});
-
-const model = gateway("zai/glm-4.7");
 
 const requestSchema = z.object({
   puzzleId: z.string(),
@@ -65,7 +55,7 @@ export async function POST(request: Request) {
   }
 
   const { output } = await generateText({
-    model,
+    model: modelFlash,
     output: Output.object({ schema: solveJudgmentSchema }),
     prompt: `You are a judge for a lateral thinking puzzle game. The player is attempting to solve the puzzle by explaining what they think happened.
 

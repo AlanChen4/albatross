@@ -1,12 +1,14 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { judgmentLabels } from "~/app/_lib/constants";
 import type { QuestionEntry } from "~/app/_lib/types";
 import { Button } from "~/components/ui/button";
 import { env } from "~/env";
 import { useTypewriter } from "~/hooks/use-typewriter";
+import { cn } from "~/lib/utils";
 
 type QuestionFormProps = {
   onSubmit: (question: string) => void;
@@ -99,15 +101,14 @@ export function QuestionForm({
   }, [input, placeholder, resize]);
 
   return (
-    <div className="w-full">
+    <div className={cn("w-full", guessMode ? "pt-4" : "pt-0")}>
       <motion.form
-        animate={{ scale: guessMode ? 1.25 : 1 }}
+        animate={{ fontSize: guessMode ? "1.15em" : "1em" }}
         onSubmit={handleSubmit}
-        style={{ originX: 0.5, originY: 0.5 }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
       >
         <textarea
-          className="w-full resize-none bg-transparent text-foreground placeholder:text-muted-foreground placeholder:opacity-50 focus:outline-none disabled:opacity-50"
+          className="w-full resize-none overflow-hidden bg-transparent text-foreground placeholder:text-muted-foreground placeholder:opacity-50 focus:outline-none disabled:opacity-50"
           disabled={loading}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
@@ -123,6 +124,22 @@ export function QuestionForm({
         />
       </motion.form>
       <AnimatePresence>
+        {loading && (
+          <motion.div
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Image
+              alt="Loading..."
+              className="animation-duration-[5s] animate-spin"
+              height={32}
+              src="/imgs/spinner.webp"
+              width={32}
+            />
+          </motion.div>
+        )}
         {showAnswer && !guessMode && (
           <motion.p
             animate={{ opacity: 1 }}

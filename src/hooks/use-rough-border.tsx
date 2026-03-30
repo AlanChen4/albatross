@@ -8,9 +8,11 @@ type Shape = "rectangle" | "ellipse";
 export function useRoughBorder({
   enabled,
   shape,
+  underline = true,
 }: {
   enabled: boolean;
   shape: Shape;
+  underline?: boolean;
 }) {
   const internalRef = useRef<HTMLElement>(null);
   const seed = useRef(Math.floor(Math.random() * 2 ** 31));
@@ -100,18 +102,19 @@ export function useRoughBorder({
             strokeWidth={p.strokeWidth}
           />
         ))}
-        {drawings.underline.map((p) => (
-          <path
-            className="transition-[stroke-dashoffset] duration-950 ease-out group-hover:[stroke-dashoffset:0]"
-            d={p.d}
-            fill="none"
-            key={p.d}
-            stroke="currentColor"
-            strokeDasharray={size.width * 2}
-            strokeDashoffset={size.width * 2}
-            strokeWidth={p.strokeWidth}
-          />
-        ))}
+        {underline &&
+          drawings.underline.map((p) => (
+            <path
+              className="transition-[stroke-dashoffset] duration-950 ease-out group-hover:[stroke-dashoffset:0]"
+              d={p.d}
+              fill="none"
+              key={p.d}
+              stroke="currentColor"
+              strokeDasharray={size.width * 2}
+              strokeDashoffset={size.width * 2}
+              strokeWidth={p.strokeWidth}
+            />
+          ))}
       </svg>
     ) : null;
 

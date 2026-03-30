@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { getTodaysPuzzle } from "~/lib/puzzles";
+import { getNextPuzzle } from "~/lib/puzzles";
 import { PuzzleGame } from "./_components/puzzle-game";
 
 export default async function Home() {
-  const puzzle = await getTodaysPuzzle();
+  const puzzle = await getNextPuzzle();
 
   if (!puzzle) {
     return (
@@ -18,11 +18,15 @@ export default async function Home() {
           width={256}
         />
         <p className="text-foreground text-lg">
-          No puzzle today. Check back tomorrow!
+          You've played all the puzzles! Check back later for new ones.
         </p>
       </div>
     );
   }
 
-  return <PuzzleGame puzzle={puzzle} />;
+  return (
+    <div className="flex h-dvh flex-col">
+      <PuzzleGame puzzle={puzzle} />
+    </div>
+  );
 }
