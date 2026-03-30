@@ -133,6 +133,27 @@ export function TopBar({ puzzleId }: { puzzleId: string }) {
             </svg>
             Continue with Google
           </Button>
+          <p className="text-center text-muted-foreground text-xs">
+            By signing in you agree to our{" "}
+            <a
+              className="underline underline-offset-2 transition-colors hover:text-foreground"
+              href="/terms"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a
+              className="underline underline-offset-2 transition-colors hover:text-foreground"
+              href="/privacy"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Privacy Policy
+            </a>
+            .
+          </p>
         </DialogContent>
       </Dialog>
     </>

@@ -1,6 +1,6 @@
 # Albatross
 
-A daily lateral thinking puzzle game. Each day, a new puzzle is released. Ask up to 20 yes-or-no questions to figure out the solution.
+A lateral thinking puzzle game platform.
 
 ## Stack
 
@@ -9,7 +9,7 @@ A daily lateral thinking puzzle game. Each day, a new puzzle is released. Ask up
 - **Styling**: Tailwind CSS v4 + shadcn/ui
 - **Linter/Formatter**: Biome
 - **Database**: Supabase (Postgres)
-- **AI**: Vercel AI SDK + DeepSeek v3.2 via Vercel AI Gateway
+- **AI**: Vercel AI SDK
 
 ## Getting Started
 
@@ -50,12 +50,3 @@ Fill in your values in `.env.local`.
 | `pnpm format` | Format code with Biome |
 | `pnpm lint` | Lint code with Biome |
 | `pnpm typecheck` | Run TypeScript type checking |
-
-## How It Works
-
-1. A puzzle prompt and GIF are displayed on screen
-2. The player types yes-or-no questions to narrow down the solution
-3. An AI model (DeepSeek v3.2) judges each question and responds with: **Yes**, **No**, **Not relevant**, or **That's not a yes or no question**
-4. After 20 questions or giving up, the solution is revealed
-
-In development mode, the same puzzle is always served regardless of date.
