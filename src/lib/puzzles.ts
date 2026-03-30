@@ -11,7 +11,7 @@ export async function getTodaysPuzzle() {
       .eq("status", "published")
       .limit(1)
       .single();
-    if (error) throw new Error(`Failed to fetch puzzle: ${error.message}`);
+    if (error) return null;
     return data;
   }
 
@@ -21,9 +21,8 @@ export async function getTodaysPuzzle() {
     .select("puzzles(id, prompt, image_url)")
     .eq("release_date", today)
     .single();
-  if (error) throw new Error(`No puzzle for today: ${error.message}`);
+  if (error) return null;
   const puzzle = data.puzzles;
-  if (Array.isArray(puzzle))
-    throw new Error("Expected single puzzle, got array");
+  if (Array.isArray(puzzle)) return null;
   return puzzle;
 }

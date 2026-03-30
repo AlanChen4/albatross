@@ -18,6 +18,7 @@ type PuzzleInput = {
   solution: string;
   source_url?: string;
   image_url?: string;
+  release_date?: string;
 };
 
 function contentHash(prompt: string, solution: string): string {
@@ -94,6 +95,24 @@ async function main() {
       }
     } else {
       inserted++;
+
+      if (entry.release_date) {
+        const { data: puzzle } = await supabase
+          .from("puzzles")
+          .select("id")
+          .eq("content_hash", hash)
+          .single();
+
+        if (puzzle) {
+          const { error: scheduleError } = await supabase
+            .from("puzzle_schedule")
+            .insert({ release_date: entry.release_date, puzzle_id: puzzle.id });
+
+          if (scheduleError) {
+            console.warn(`  [${i}] schedule insert error: ${scheduleError.message}`);
+          }
+        }
+      }
     }
   }
 
